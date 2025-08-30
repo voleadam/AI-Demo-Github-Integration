@@ -69,14 +69,7 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ onBack }) => {
     setErrorMessage('');
 
     try {
-      // Check if Supabase is available
-      if (!supabase) {
-        // Simulate successful submission when Supabase isn't configured
-        console.log('Form data (demo mode):', formData);
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
-      } else {
-        await submitConsultationRequest(formData);
-      }
+      await submitConsultationRequest(formData);
       if (!supabase) {
         // Simulate successful submission when Supabase isn't configured
         console.log('Form data (demo mode):', formData);
