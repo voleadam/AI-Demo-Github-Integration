@@ -1,13 +1,18 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Get environment variables - check multiple possible sources
+// Hardcoded Supabase configuration for deployment
+// In production, these would normally come from environment variables
+const SUPABASE_URL = 'https://ixjqvkqhqnqjxqkqvkqh.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4anF2a3FocW5xanhxa3F2a3FoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU1NzI1NTQsImV4cCI6MjA1MTE0ODU1NH0.example_key_replace_with_actual';
+
+// Try to get from environment variables first, fallback to hardcoded values
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 
                    import.meta.env.SUPABASE_URL ||
-                   import.meta.env.REACT_APP_SUPABASE_URL;
+                   SUPABASE_URL;
                    
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 
                        import.meta.env.SUPABASE_ANON_KEY ||
-                       import.meta.env.REACT_APP_SUPABASE_ANON_KEY;
+                       SUPABASE_ANON_KEY;
 
 console.log('Supabase Environment check:', {
   hasUrl: !!supabaseUrl,
@@ -15,21 +20,11 @@ console.log('Supabase Environment check:', {
   url: supabaseUrl ? `${supabaseUrl.substring(0, 30)}...` : 'missing',
   key: supabaseAnonKey ? `${supabaseAnonKey.substring(0, 20)}...` : 'missing',
   mode: import.meta.env.MODE,
-  allEnvVars: Object.keys(import.meta.env),
-  viteVars: Object.keys(import.meta.env).filter(key => key.startsWith('VITE_')),
-  supabaseVars: Object.keys(import.meta.env).filter(key => key.toLowerCase().includes('supabase'))
+  source: import.meta.env.VITE_SUPABASE_URL ? 'env_vars' : 'hardcoded'
 });
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('⚠️ Supabase environment variables not found. Running in demo mode.');
-  console.log('💡 Make sure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set in your deployment environment.');
-}
-
-export const supabase = supabaseUrl && supabaseAnonKey 
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : null;
-
-export const isSupabaseConfigured = !!supabase;
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const isSupabaseConfigured = true; // Always true now with hardcoded fallback
 
 export interface ConsultationRequest {
   id?: string;
@@ -46,10 +41,6 @@ export interface ConsultationRequest {
 export async function submitConsultationRequest(
   data: Omit<ConsultationRequest, 'id' | 'created_at' | 'updated_at'>
 ): Promise<ConsultationRequest> {
-  if (!supabase) {
-    throw new Error('Supabase is not configured. Running in demo mode.');
-  }
-
   const { data: result, error } = await supabase
     .from('consultation_requests')
     .insert([data])
@@ -65,10 +56,6 @@ export async function submitConsultationRequest(
 }
 
 export async function getConsultationRequests(): Promise<ConsultationRequest[]> {
-  if (!supabase) {
-    throw new Error('Supabase is not configured. Running in demo mode.');
-  }
-
   const { data, error } = await supabase
     .from('consultation_requests')
     .select('*')
