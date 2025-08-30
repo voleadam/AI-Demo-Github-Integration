@@ -69,7 +69,7 @@ const HomePage: React.FC<HomePageProps> = ({ onBookCall }) => {
       <header className="relative z-10 flex justify-between items-center p-6 lg:p-8 border-b border-gray-800">
         <div className="flex items-center">
           <img 
-            src="./assets/pablo.png" 
+            src="/pablo.png" 
             alt="Pablo AI" 
             className="w-10 h-10 mr-3 rounded-full"
           />
