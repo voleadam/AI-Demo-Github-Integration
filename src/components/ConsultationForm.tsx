@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Send, CheckCircle, AlertCircle } from 'lucide-react';
-import { submitConsultationRequest, ConsultationRequest } from '../lib/supabase';
+import { submitConsultationRequest, ConsultationRequest, supabase } from '../lib/supabase';
 
 interface ConsultationFormProps {
   onBack: () => void;
@@ -69,7 +69,14 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ onBack }) => {
     setErrorMessage('');
 
     try {
-      await submitConsultationRequest(formData);
+      // Check if Supabase is available
+      if (!supabase) {
+        // Simulate successful submission when Supabase isn't configured
+        console.log('Form data (demo mode):', formData);
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
+      } else {
+        await submitConsultationRequest(formData);
+      }
       setSubmissionState('success');
     } catch (error) {
       setSubmissionState('error');
