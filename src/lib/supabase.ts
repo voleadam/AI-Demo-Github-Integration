@@ -1,20 +1,15 @@
 import { createClient } from '@supabase/supabase-js';
 
 
-// Netlify Supabase integration uses specific environment variable names
-const supabaseUrl = process.env.SUPABASE_DATABASE_URL || 
-                   import.meta.env.VITE_SUPABASE_URL;
-                   
-const supabaseAnonKey = process.env.PUBLIC_SUPABASE_ANON_KEY || 
-                       import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 console.log('Supabase Environment check:', {
   hasUrl: !!supabaseUrl,
   hasKey: !!supabaseAnonKey,
   url: supabaseUrl ? `${supabaseUrl.substring(0, 30)}...` : 'missing',
   key: supabaseAnonKey ? `${supabaseAnonKey.substring(0, 20)}...` : 'missing',
-  mode: import.meta.env.MODE,
-  source: process.env.SUPABASE_DATABASE_URL ? 'netlify_env' : 'vite_env'
+  mode: import.meta.env.MODE
 });
 
 export const supabase = createClient(supabaseUrl!, supabaseAnonKey!);
