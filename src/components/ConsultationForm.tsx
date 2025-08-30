@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Send, CheckCircle, AlertCircle } from 'lucide-react';
-import { submitConsultationRequest, ConsultationRequest, isSupabaseConfigured } from '../lib/supabase';
+import { submitConsultationRequest, ConsultationRequest } from '../lib/supabase';
 
 interface ConsultationFormProps {
   onBack: () => void;
@@ -135,14 +135,6 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ onBack }) => {
             <p className="text-gray-300 text-lg mb-4 font-medium">
               Complete this form to schedule a personalized consultation with our AI automation specialists. We'll analyze your specific requirements and design a custom solution for your business.
             </p>
-            {!isSupabaseConfigured && (
-              <div className="mb-6 p-4 border border-yellow-500 bg-yellow-500/10 flex items-center">
-                <AlertCircle className="w-5 h-5 text-yellow-400 mr-3 flex-shrink-0" />
-                <span className="text-yellow-400 font-medium text-sm">
-                  Demo mode: Form submissions will be logged to console (database not connected)
-                </span>
-              </div>
-            )}
             <div className="text-sm text-gray-500 font-medium">
               {'>'}All fields marked with * are required for processing
             </div>
