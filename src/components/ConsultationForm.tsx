@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Send, CheckCircle, AlertCircle } from 'lucide-react';
-import { submitConsultationRequest, ConsultationRequest } from '../lib/supabase';
+import { submitConsultationRequest, ConsultationRequest, assertSupabase } from '../lib/supabase';
 
 interface ConsultationFormProps {
   onBack: () => void;
