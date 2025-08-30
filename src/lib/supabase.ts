@@ -1,24 +1,21 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Try multiple ways to get environment variables
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 
-                   import.meta.env.SUPABASE_URL ||
-                   (typeof window !== 'undefined' && (window as any).VITE_SUPABASE_URL);
+// Get environment variables - Vite only exposes VITE_ prefixed vars in production
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 
-                       import.meta.env.SUPABASE_ANON_KEY ||
-                       (typeof window !== 'undefined' && (window as any).VITE_SUPABASE_ANON_KEY);
-
-console.log('Environment check:', {
+console.log('Supabase Environment check:', {
   hasUrl: !!supabaseUrl,
   hasKey: !!supabaseAnonKey,
-  url: supabaseUrl ? `${supabaseUrl.substring(0, 20)}...` : 'missing',
-  allEnvVars: Object.keys(import.meta.env)
+  url: supabaseUrl ? `${supabaseUrl.substring(0, 30)}...` : 'missing',
+  key: supabaseAnonKey ? `${supabaseAnonKey.substring(0, 20)}...` : 'missing',
+  mode: import.meta.env.MODE,
+  allEnvVars: Object.keys(import.meta.env).filter(key => key.startsWith('VITE_'))
 });
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Supabase environment variables not found. Running in demo mode.');
-  console.log('Available env vars:', import.meta.env);
+  console.warn('⚠️ Supabase environment variables not found. Running in demo mode.');
+  console.log('💡 Make sure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set in your deployment environment.');
 }
 
 export const supabase = supabaseUrl && supabaseAnonKey 
