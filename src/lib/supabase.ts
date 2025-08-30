@@ -21,8 +21,15 @@ export interface ConsultationRequest {
 }
 
 // Function to submit consultation request
-export async function submitConsultationRequest(data: Omit<ConsultationRequest, 'id' | 'created_at' | 'updated_at'>) {
-  const { data: result, error } = await supabase
+export async function submitConsultationRequest(
+  data: Omit<ConsultationRequest, 'id' | 'created_at' | 'updated_at'>,
+  supabaseClient = supabase
+) {
+  if (!supabaseClient) {
+    throw new Error('Supabase client not available');
+  }
+
+  const { data: result, error } = await supabaseClient
     .from('consultation_requests')
     .insert([data])
     .select()

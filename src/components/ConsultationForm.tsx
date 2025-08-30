@@ -60,6 +60,14 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ onBack }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Check if Supabase is configured
+    const supabaseClient = assertSupabase();
+    if (!supabaseClient) {
+      setSubmissionState('error');
+      setErrorMessage('Database connection not configured. Please contact support.');
+      return;
+    }
+    
     if (!validateForm()) {
       setErrorMessage('Please fill in all required fields with valid information.');
       return;
@@ -69,7 +77,7 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ onBack }) => {
     setErrorMessage('');
 
     try {
-      await submitConsultationRequest(formData);
+      await submitConsultationRequest(formData, supabaseClient);
       setSubmissionState('success');
     } catch (error) {
       setSubmissionState('error');
