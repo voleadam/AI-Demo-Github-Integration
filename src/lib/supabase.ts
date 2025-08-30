@@ -1,5 +1,13 @@
-// Supabase integration removed
-// Form submissions will now work in demo mode only
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing Supabase environment variables. Please check your .env file.');
+}
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export interface ConsultationRequest {
   id?: string;
@@ -13,26 +21,33 @@ export interface ConsultationRequest {
   updated_at?: string;
 }
 
-// Demo function to simulate form submission
 export async function submitConsultationRequest(
   data: Omit<ConsultationRequest, 'id' | 'created_at' | 'updated_at'>
-) {
-  // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  // Log the form data for demo purposes
-  console.log('Demo form submission:', {
-    ...data,
-    id: `demo_${Date.now()}`,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  });
-  
-  // Simulate successful submission
-  return {
-    ...data,
-    id: `demo_${Date.now()}`,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  };
+): Promise<ConsultationRequest> {
+  const { data: result, error } = await supabase
+    .from('consultation_requests')
+    .insert([data])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Supabase error:', error);
+    throw new Error(`Failed to submit consultation request: ${error.message}`);
+  }
+
+  return result;
+}
+
+export async function getConsultationRequests(): Promise<ConsultationRequest[]> {
+  const { data, error } = await supabase
+    .from('consultation_requests')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Supabase error:', error);
+    throw new Error(`Failed to fetch consultation requests: ${error.message}`);
+  }
+
+  return data || [];
 }

@@ -69,11 +69,13 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ onBack }) => {
     setErrorMessage('');
 
     try {
-      await submitConsultationRequest(formData);
+      const result = await submitConsultationRequest(formData);
+      console.log('Consultation request submitted successfully:', result);
       setSubmissionState('success');
     } catch (error) {
       setSubmissionState('error');
-      setErrorMessage(error instanceof Error ? error.message : 'An unexpected error occurred');
+      setErrorMessage(error instanceof Error ? error.message : 'Failed to submit consultation request. Please try again.');
+      console.error('Submission error:', error);
     }
   };
 
