@@ -70,8 +70,8 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ onBack }) => {
 
     try {
       if (isSupabaseConfigured) {
-        const result = await submitConsultationRequest(formData);
-        console.log('Consultation request submitted successfully:', result);
+        await submitConsultationRequest(formData);
+        console.log('Consultation request submitted successfully');
       } else {
         // Demo mode - just log the data
         console.log('Demo mode - consultation request data:', formData);

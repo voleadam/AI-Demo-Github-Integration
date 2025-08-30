@@ -34,19 +34,15 @@ export interface ConsultationRequest {
 
 export async function submitConsultationRequest(
   data: Omit<ConsultationRequest, 'id' | 'created_at' | 'updated_at'>
-): Promise<ConsultationRequest> {
-  const { data: result, error } = await supabase
+): Promise<void> {
+  const { error } = await supabase
     .from('consultation_requests')
-    .insert([data])
-    .select()
-    .single();
+    .insert([data]);
 
   if (error) {
     console.error('Supabase error:', error);
     throw new Error(`Failed to submit consultation request: ${error.message}`);
   }
-
-  return result;
 }
 
 export async function getConsultationRequests(): Promise<ConsultationRequest[]> {
