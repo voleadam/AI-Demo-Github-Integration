@@ -1,17 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
 
-const url = import.meta.env.VITE_SUPABASE_URL;
-const anon = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-export const supabase =
-  url && anon ? createClient(url, anon) : null;
-
-export function assertSupabase() {
-  if (!supabase) {
-    console.warn('Supabase env vars missing. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');
-  }
-  return supabase;
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing Supabase environment variables');
 }
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Types for our consultation request
 export interface ConsultationRequest {
@@ -28,13 +24,7 @@ export interface ConsultationRequest {
 
 // Function to submit consultation request
 export async function submitConsultationRequest(data: Omit<ConsultationRequest, 'id' | 'created_at' | 'updated_at'>) {
-  const supabaseClient = assertSupabase();
-  
-  if (!supabaseClient) {
-    throw new Error('Supabase is not configured. Please set up your environment variables.');
-  }
-
-  const { data: result, error } = await supabaseClient
+  const { data: result, error } = await supabase
     .from('consultation_requests')
     .insert([data])
     .select()
