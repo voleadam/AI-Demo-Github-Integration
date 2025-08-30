@@ -1,8 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Get environment variables - Vite only exposes VITE_ prefixed vars in production
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// Get environment variables - check multiple possible sources
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 
+                   import.meta.env.SUPABASE_URL ||
+                   import.meta.env.REACT_APP_SUPABASE_URL;
+                   
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 
+                       import.meta.env.SUPABASE_ANON_KEY ||
+                       import.meta.env.REACT_APP_SUPABASE_ANON_KEY;
 
 console.log('Supabase Environment check:', {
   hasUrl: !!supabaseUrl,
@@ -10,7 +15,9 @@ console.log('Supabase Environment check:', {
   url: supabaseUrl ? `${supabaseUrl.substring(0, 30)}...` : 'missing',
   key: supabaseAnonKey ? `${supabaseAnonKey.substring(0, 20)}...` : 'missing',
   mode: import.meta.env.MODE,
-  allEnvVars: Object.keys(import.meta.env).filter(key => key.startsWith('VITE_'))
+  allEnvVars: Object.keys(import.meta.env),
+  viteVars: Object.keys(import.meta.env).filter(key => key.startsWith('VITE_')),
+  supabaseVars: Object.keys(import.meta.env).filter(key => key.toLowerCase().includes('supabase'))
 });
 
 if (!supabaseUrl || !supabaseAnonKey) {
