@@ -4,12 +4,10 @@ import { createClient } from '@supabase/supabase-js';
 // Try different environment variable names for different deployment platforms
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 
                    import.meta.env.VITE_SUPABASE_DATABASE_URL ||
-                   import.meta.env.VITE_PUBLIC_SUPABASE_URL ||
-                   'https://spqktrapovugrnsdireu.supabase.co';
+                   import.meta.env.VITE_PUBLIC_SUPABASE_URL 
 
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 
-                       import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY ||
-                       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwcWt0cmFwb3Z1Z3Juc2RpcmV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU1NTU3NzQsImV4cCI6MjA1MTEzMTc3NH0.eyjhGct0iJIUzI1NiIs...';
+                       import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY 
 
 console.log('Supabase Environment check:', {
   hasUrl: !!supabaseUrl,
