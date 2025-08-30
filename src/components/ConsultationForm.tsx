@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Send, CheckCircle, AlertCircle } from 'lucide-react';
-import { submitConsultationRequest, ConsultationRequest, assertSupabase } from '../lib/supabase';
+import { submitConsultationRequest, ConsultationRequest } from '../lib/supabase';
 
 interface ConsultationFormProps {
   onBack: () => void;
@@ -60,14 +60,6 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ onBack }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Check if Supabase is configured
-    const supabaseClient = assertSupabase();
-    if (!supabaseClient) {
-      setSubmissionState('error');
-      setErrorMessage('Database connection not configured. Please contact support.');
-      return;
-    }
-    
     if (!validateForm()) {
       setErrorMessage('Please fill in all required fields with valid information.');
       return;
@@ -77,7 +69,7 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ onBack }) => {
     setErrorMessage('');
 
     try {
-      await submitConsultationRequest(formData, supabaseClient);
+      await submitConsultationRequest(formData);
       setSubmissionState('success');
     } catch (error) {
       setSubmissionState('error');
