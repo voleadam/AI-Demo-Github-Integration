@@ -1,22 +1,6 @@
-import { createClient } from '@supabase/supabase-js';
+// Supabase integration removed
+// Form submissions will now work in demo mode only
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-// Debug environment variables
-console.log('Environment check:', {
-  hasUrl: !!supabaseUrl,
-  hasKey: !!supabaseAnonKey,
-  urlLength: supabaseUrl?.length || 0,
-  keyLength: supabaseAnonKey?.length || 0
-});
-
-// Create Supabase client
-export const supabase = supabaseUrl && supabaseAnonKey 
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : null;
-
-// Types for our consultation request
 export interface ConsultationRequest {
   id?: string;
   name: string;
@@ -29,24 +13,26 @@ export interface ConsultationRequest {
   updated_at?: string;
 }
 
-// Function to submit consultation request
+// Demo function to simulate form submission
 export async function submitConsultationRequest(
-  data: Omit<ConsultationRequest, 'id' | 'created_at' | 'updated_at'>,
-  supabaseClient = supabase
+  data: Omit<ConsultationRequest, 'id' | 'created_at' | 'updated_at'>
 ) {
-  if (!supabaseClient) {
-    throw new Error('Supabase client not available');
-  }
-
-  const { data: result, error } = await supabaseClient
-    .from('consultation_requests')
-    .insert([data])
-    .select()
-    .single();
-
-  if (error) {
-    throw new Error(`Failed to submit consultation request: ${error.message}`);
-  }
-
-  return result;
+  // Simulate network delay
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  // Log the form data for demo purposes
+  console.log('Demo form submission:', {
+    ...data,
+    id: `demo_${Date.now()}`,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  });
+  
+  // Simulate successful submission
+  return {
+    ...data,
+    id: `demo_${Date.now()}`,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  };
 }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Send, CheckCircle, AlertCircle } from 'lucide-react';
-import { submitConsultationRequest, ConsultationRequest, supabase } from '../lib/supabase';
+import { submitConsultationRequest, ConsultationRequest } from '../lib/supabase';
 
 interface ConsultationFormProps {
   onBack: () => void;
@@ -69,22 +69,7 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ onBack }) => {
     setErrorMessage('');
 
     try {
-      if (!supabase) {
-        throw new Error('Supabase client not available. Please check your environment configuration.');
-      }
-      
-      if (!supabase) {
-        throw new Error('Supabase connection not available. Please ensure your environment variables are configured.');
-      }
-      
-      await submitConsultationRequest(formData, supabase);
-      if (!supabase) {
-        // Simulate successful submission when Supabase isn't configured
-        console.log('Form data (demo mode):', formData);
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
-      } else {
-        await submitConsultationRequest(formData);
-      }
+      await submitConsultationRequest(formData);
       setSubmissionState('success');
     } catch (error) {
       setSubmissionState('error');
