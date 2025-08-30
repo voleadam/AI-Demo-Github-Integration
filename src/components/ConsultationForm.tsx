@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Send, CheckCircle, AlertCircle } from 'lucide-react';
-import { submitConsultationRequest, ConsultationRequest } from '../lib/supabase';
+import { submitConsultationRequest, ConsultationRequest, isSupabaseConfigured } from '../lib/supabase';
 
 interface ConsultationFormProps {
   onBack: () => void;
@@ -69,8 +69,15 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ onBack }) => {
     setErrorMessage('');
 
     try {
-      const result = await submitConsultationRequest(formData);
-      console.log('Consultation request submitted successfully:', result);
+      if (isSupabaseConfigured) {
+        const result = await submitConsultationRequest(formData);
+        console.log('Consultation request submitted successfully:', result);
+      } else {
+        // Demo mode - just log the data
+        console.log('Demo mode - consultation request data:', formData);
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
       setSubmissionState('success');
     } catch (error) {
       setSubmissionState('error');
@@ -89,8 +96,13 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ onBack }) => {
               {'>'}REQUEST_SUBMITTED
             </h2>
             <p className="text-gray-300 mb-6 font-medium">
-              Your consultation request has been successfully processed. Our AI automation specialists will contact you within 24 hours to schedule your consultation.
+              Your consultation request has been successfully {isSupabaseConfigured ? 'saved' : 'processed'}. Our AI automation specialists will contact you within 24 hours to schedule your consultation.
             </p>
+            {!isSupabaseConfigured && (
+              <div className="text-xs text-yellow-400 mb-4 font-medium">
+                {'>'}Running in demo mode - data logged to console
+              </div>
+            )}
             <div className="text-sm text-gray-500 mb-8 font-medium">
               {'>'}Confirmation sent to: {formData.email}
             </div>
