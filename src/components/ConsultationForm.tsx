@@ -73,7 +73,11 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ onBack }) => {
         throw new Error('Supabase client not available. Please check your environment configuration.');
       }
       
-      await submitConsultationRequest(formData);
+      if (!supabase) {
+        throw new Error('Supabase connection not available. Please ensure your environment variables are configured.');
+      }
+      
+      await submitConsultationRequest(formData, supabase);
       if (!supabase) {
         // Simulate successful submission when Supabase isn't configured
         console.log('Form data (demo mode):', formData);
