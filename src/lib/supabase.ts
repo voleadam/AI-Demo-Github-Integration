@@ -1,18 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Hardcoded Supabase configuration for deployment
-// In production, these would normally come from environment variables
-const SUPABASE_URL = 'https://ixjqvkqhqnqjxqkqvkqh.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4anF2a3FocW5xanhxa3F2a3FoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU1NzI1NTQsImV4cCI6MjA1MTE0ODU1NH0.example_key_replace_with_actual';
 
-// Try to get from environment variables first, fallback to hardcoded values
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 
-                   import.meta.env.SUPABASE_URL ||
-                   SUPABASE_URL;
+// Netlify Supabase integration uses specific environment variable names
+const supabaseUrl = process.env.SUPABASE_DATABASE_URL || 
+                   import.meta.env.VITE_SUPABASE_URL;
                    
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 
-                       import.meta.env.SUPABASE_ANON_KEY ||
-                       SUPABASE_ANON_KEY;
+const supabaseAnonKey = process.env.PUBLIC_SUPABASE_ANON_KEY || 
+                       import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 console.log('Supabase Environment check:', {
   hasUrl: !!supabaseUrl,
@@ -20,11 +14,11 @@ console.log('Supabase Environment check:', {
   url: supabaseUrl ? `${supabaseUrl.substring(0, 30)}...` : 'missing',
   key: supabaseAnonKey ? `${supabaseAnonKey.substring(0, 20)}...` : 'missing',
   mode: import.meta.env.MODE,
-  source: import.meta.env.VITE_SUPABASE_URL ? 'env_vars' : 'hardcoded'
+  source: process.env.SUPABASE_DATABASE_URL ? 'netlify_env' : 'vite_env'
 });
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
-export const isSupabaseConfigured = true; // Always true now with hardcoded fallback
+export const supabase = createClient(supabaseUrl!, supabaseAnonKey!);
+export const isSupabaseConfigured = !!(supabaseUrl && supabaseAnonKey);
 
 export interface ConsultationRequest {
   id?: string;
