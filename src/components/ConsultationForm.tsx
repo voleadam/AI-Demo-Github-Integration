@@ -69,6 +69,10 @@ const ConsultationForm: React.FC<ConsultationFormProps> = ({ onBack }) => {
     setErrorMessage('');
 
     try {
+      if (!supabase) {
+        throw new Error('Supabase client not available. Please check your environment configuration.');
+      }
+      
       await submitConsultationRequest(formData);
       if (!supabase) {
         // Simulate successful submission when Supabase isn't configured
